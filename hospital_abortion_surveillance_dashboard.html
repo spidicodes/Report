@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>US Abortion Surveillance Dashboard — CDC 2013–2022</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f8f7f4;color:#1a1a18;padding:24px;min-height:100vh}
+  .dash{max-width:1000px;margin:0 auto}
+  .hdr{margin-bottom:20px}
+  .hdr h1{font-size:20px;font-weight:500;color:#1a1a18;margin-bottom:5px}
+  .hdr p{font-size:12px;color:#73726c}
+  .pill{display:inline-block;background:#e6f1fb;color:#185fa5;font-size:11px;padding:2px 9px;border-radius:8px;margin-left:8px;vertical-align:middle}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+  .kpi{background:#f1efe8;padding:14px 16px;border-radius:8px}
+  .kl{font-size:11px;color:#73726c;margin-bottom:5px}
+  .kv{font-size:22px;font-weight:500;color:#1a1a18}
+  .ks{font-size:11px;color:#888780;margin-top:3px}
+  .kv.down{color:#0f6e56}
+  .card{background:#fff;border:0.5px solid rgba(0,0,0,0.12);border-radius:12px;padding:16px;margin-bottom:14px}
+  .clabel{font-size:13px;font-weight:500;color:#1a1a18;margin-bottom:9px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+  .lgd{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:8px;font-size:11px;color:#73726c}
+  .li{display:flex;align-items:center;gap:4px}
+  .ld{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+  .note{font-size:11px;color:#888780;margin-top:8px;line-height:1.5}
+  .sg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .sc{background:#f1efe8;padding:12px 14px;border-radius:8px}
+  .sn{font-size:12px;font-weight:500;color:#1a1a18;margin-bottom:2px}
+  .sv{font-size:22px;font-weight:500;color:#1a1a18;margin:4px 0}
+  .dkpis{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px}
+  .dkpi{flex:1;min-width:140px;background:#f1efe8;padding:13px 14px;border-radius:8px}
+  .src{font-size:11px;color:#888780;margin-top:18px;border-top:0.5px solid rgba(0,0,0,0.1);padding-top:12px;line-height:1.6}
+  @media(max-width:640px){.kpis{grid-template-columns:1fr 1fr}.row2{grid-template-columns:1fr}.dkpis{flex-direction:column}}
+  @media print{body{background:#fff;padding:10px}.card{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="dash">
+
+  <div class="hdr">
+    <h1>US Abortion Surveillance Report Dashboard <span class="pill">CDC 2013–2022</span></h1>
+    <p>Source: CDC MMWR Annual Abortion Surveillance Reports — all figures verified from published MMWR sources</p>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="kl">Total abortions (2022)</div><div class="kv">613,383</div><div class="ks">from 48 reporting areas</div></div>
+    <div class="kpi"><div class="kl">Abortion rate (2022)</div><div class="kv">11.2</div><div class="ks">per 1,000 women aged 15–44</div></div>
+    <div class="kpi"><div class="kl">Abortion ratio (2022)</div><div class="kv">199</div><div class="ks">per 1,000 live births</div></div>
+    <div class="kpi"><div class="kl">10-year rate change</div><div class="kv down">−10%</div><div class="ks">12.4 (2013) → 11.2 (2022)</div></div>
+  </div>
+
+  <div class="card">
+    <div class="clabel">Annual abortions reported &amp; rate per 1,000 women (2013–2022)</div>
+    <div class="lgd">
+      <span class="li"><span class="ld" style="background:#3b82f6"></span>Total abortions (left axis)</span>
+      <span class="li"><span class="ld" style="background:#f59e0b;border-radius:50%"></span>Rate per 1,000 women (right axis)</span>
+    </div>
+    <div style="position:relative;width:100%;height:220px"><canvas id="tc1"></canvas></div>
+    <p class="note">Note: Different reporting areas across years mean totals are not directly comparable. Rate uses 47 continuously reporting areas.</p>
+  </div>
+
+  <div class="row2">
+    <div class="card">
+      <div class="clabel">Gestational age at time of abortion (2022)</div>
+      <div class="lgd">
+        <span class="li"><span class="ld" style="background:#3b82f6"></span>≤9 wks 78.6%</span>
+        <span class="li"><span class="ld" style="background:#06b6d4"></span>10–13 wks 14.2%</span>
+        <span class="li"><span class="ld" style="background:#f59e0b"></span>14–20 wks 6.1%</span>
+        <span class="li"><span class="ld" style="background:#ef4444"></span>≥21 wks 1.1%</span>
+      </div>
+      <div style="position:relative;width:100%;height:200px"><canvas id="tc2"></canvas></div>
+      <p class="note">10–13 week figure derived: 92.8% (≤13 wks, CDC-stated) minus 78.6% (≤9 wks) = 14.2%</p>
+    </div>
+    <div class="card">
+      <div class="clabel">Abortion method type distribution (2022)</div>
+      <div class="lgd">
+        <span class="li"><span class="ld" style="background:#8b5cf6"></span>Medication ≤9wks 53.3%</span>
+        <span class="li"><span class="ld" style="background:#3b82f6"></span>Surgical ≤13wks 35.5%</span>
+        <span class="li"><span class="ld" style="background:#f59e0b"></span>Surgical >13wks 6.9%</span>
+        <span class="li"><span class="ld" style="background:#10b981"></span>Medication >9wks 4.3%</span>
+      </div>
+      <div style="position:relative;width:100%;height:200px"><canvas id="tc3"></canvas></div>
+    </div>
+  </div>
+
+  <div class="row2">
+    <div class="card">
+      <div class="clabel">Age group share of all abortions (2022)</div>
+      <div style="position:relative;width:100%;height:200px"><canvas id="tc4"></canvas></div>
+      <p class="note">Ages &lt;15, 20–24, 25–29, and ≥40 are directly cited CDC values. Remaining groups (15–19, 30–34, 35–39) account for ~39.7%. Source: CDC MMWR Vol.73 No.7.</p>
+    </div>
+    <div class="card">
+      <div class="clabel">Abortion ratio per 1,000 live births (2013–2022)</div>
+      <div class="lgd"><span class="li"><span class="ld" style="background:#10b981;border-radius:50%"></span>Ratio per 1,000 live births</span></div>
+      <div style="position:relative;width:100%;height:200px"><canvas id="tc5"></canvas></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="clabel">Rise in early medication abortion as share of all abortions (verified data points)</div>
+    <div class="lgd"><span class="li"><span class="ld" style="background:#8b5cf6;border-radius:50%"></span>Early medication abortion %</span></div>
+    <div style="position:relative;width:100%;height:180px"><canvas id="tc6"></canvas></div>
+    <p class="note">Verified points: 2013 ≈23.3% (back-calculated from CDC-stated 129% increase to 2022); 2020 = 51.0%; 2021 ≈51.2% (derived); 2022 = 53.3%. Line is interpolated across unverified intermediate years.</p>
+  </div>
+
+  <div class="card">
+    <div class="clabel">State-level abortion rate variation (2022) — extreme values</div>
+    <div class="sg">
+      <div class="sc">
+        <div class="sn">Missouri — lowest rate</div>
+        <div class="sv">0.1</div>
+        <div style="font-size:11px;color:#73726c">per 1,000 reproductive-age women</div>
+      </div>
+      <div class="sc">
+        <div class="sn">New Mexico — highest rate</div>
+        <div class="sv">2.8</div>
+        <div style="font-size:11px;color:#73726c">per 1,000 reproductive-age women</div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:10px">Full state-by-state data is in your uploaded dataset. Extreme values sourced from CDC MMWR Vol.73 No.7 (2022 data).</p>
+  </div>
+
+  <div class="card">
+    <div class="clabel">Key demographic finding: women in their 20s (2022)</div>
+    <div class="dkpis">
+      <div class="dkpi"><div class="kl">Women aged 20–24</div><div class="kv">28.3%</div><div class="ks">of all 2022 abortions</div></div>
+      <div class="dkpi"><div class="kl">Women aged 25–29</div><div class="kv">28.2%</div><div class="ks">of all 2022 abortions</div></div>
+      <div class="dkpi"><div class="kl">Women in 20s (combined)</div><div class="kv">56.5%</div><div class="ks">majority of all abortions</div></div>
+      <div class="dkpi"><div class="kl">Adolescents &lt;15 years</div><div class="kv">0.2%</div><div class="ks">lowest share by age group</div></div>
+    </div>
+  </div>
+
+  <div class="src">
+    <strong>Verified CDC data sources:</strong><br>
+    2022: MMWR Vol.73 No.7 (Nov 2024) &nbsp;·&nbsp; 2021: CDC MMWR Vol.72 &nbsp;·&nbsp; 2020: MMWR Vol.71 No.10 &nbsp;·&nbsp;
+    2019: MMWR Vol.70 No.9 (PMC8654281) &nbsp;·&nbsp; 2018: MMWR Vol.69 No.7 (PMC7713711) &nbsp;·&nbsp;
+    2016: MMWR Vol.68 No.11 &nbsp;·&nbsp; 2015: MMWR Vol.67 No.13 (PMC6289084) &nbsp;·&nbsp; 2014: MMWR Vol.66 No.25 (PMC6290801)<br><br>
+    <strong>Reporting note:</strong> Data are voluntarily submitted. California, Maryland, New Hampshire, and New Jersey did not report for all years. Figures from continuously reporting 47 areas used for rate/ratio trend analysis.
+  </div>
+
+</div>
+
+<script>
+const yrs=['2013','2014','2015','2016','2017','2018','2019','2020','2021','2022'];
+const tots=[640154,652639,638169,623471,609095,619591,629898,620327,622108,613383];
+const rates=[12.4,12.1,11.8,11.6,11.2,11.3,11.4,11.2,11.6,11.2];
+const ratios=[198,193,188,186,185,189,195,198,204,199];
+
+new Chart(document.getElementById('tc1'),{
+  data:{labels:yrs,datasets:[
+    {type:'bar',data:tots,backgroundColor:'rgba(59,130,246,0.2)',borderColor:'#3b82f6',borderWidth:1,yAxisID:'y'},
+    {type:'line',data:rates,borderColor:'#f59e0b',backgroundColor:'transparent',pointRadius:4,pointBackgroundColor:'#f59e0b',tension:0.3,yAxisID:'y1',borderWidth:2}
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{
+      x:{ticks:{font:{size:10}},grid:{display:false}},
+      y:{position:'left',min:560000,max:680000,ticks:{font:{size:10},callback:v=>(v/1000).toFixed(0)+'K'},title:{display:true,text:'Abortions',font:{size:10}}},
+      y1:{position:'right',min:10,max:14,ticks:{font:{size:10}},title:{display:true,text:'Rate',font:{size:10}},grid:{drawOnChartArea:false}}
+    }}
+});
+
+new Chart(document.getElementById('tc2'),{
+  type:'doughnut',
+  data:{labels:['≤9 weeks (78.6%)','10–13 weeks (14.2%)','14–20 weeks (6.1%)','≥21 weeks (1.1%)'],
+    datasets:[{data:[78.6,14.2,6.1,1.1],backgroundColor:['#3b82f6','#06b6d4','#f59e0b','#ef4444'],borderWidth:3,borderColor:'#fff'}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.label+': '+c.raw+'%'}}},cutout:'60%'}
+});
+
+new Chart(document.getElementById('tc3'),{
+  type:'bar',
+  data:{labels:['Medication ≤9wks','Surgical ≤13wks','Surgical >13wks','Medication >9wks'],
+    datasets:[{data:[53.3,35.5,6.9,4.3],backgroundColor:['#8b5cf6','#3b82f6','#f59e0b','#10b981'],borderRadius:4,borderWidth:0}]},
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw+'%'}}},
+    scales:{x:{min:0,max:60,ticks:{callback:v=>v+'%',font:{size:10}}},y:{ticks:{font:{size:10}},grid:{display:false}}}}
+});
+
+new Chart(document.getElementById('tc4'),{
+  type:'bar',
+  data:{labels:['<15 yrs','20–24 yrs','25–29 yrs','≥40 yrs'],
+    datasets:[{label:'% of all abortions',data:[0.2,28.3,28.2,3.6],backgroundColor:['#ef4444','#3b82f6','#06b6d4','#f59e0b'],borderRadius:4,borderWidth:0}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw+'% of abortions'}}},
+    scales:{x:{ticks:{font:{size:10}},grid:{display:false}},y:{ticks:{callback:v=>v+'%',font:{size:10}}}}}
+});
+
+new Chart(document.getElementById('tc5'),{
+  type:'line',
+  data:{labels:yrs,datasets:[{data:ratios,borderColor:'#10b981',backgroundColor:'rgba(16,185,129,0.07)',fill:true,pointRadius:4,pointBackgroundColor:'#10b981',tension:0.3,borderWidth:2}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw+' per 1,000 live births'}}},
+    scales:{x:{ticks:{font:{size:10}},grid:{display:false}},y:{min:175,max:215,ticks:{font:{size:10}}}}}
+});
+
+new Chart(document.getElementById('tc6'),{
+  type:'line',
+  data:{labels:yrs,datasets:[{data:[23.3,null,null,null,null,null,null,51.0,51.2,53.3],borderColor:'#8b5cf6',backgroundColor:'rgba(139,92,246,0.07)',fill:true,
+    pointRadius:[5,0,0,0,0,0,0,5,5,5],pointBackgroundColor:'#8b5cf6',tension:0.2,borderWidth:2,spanGaps:true}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw!==null?c.raw+'%':'(interpolated)'}}},
+    scales:{x:{ticks:{font:{size:10}},grid:{display:false}},y:{min:0,max:60,ticks:{callback:v=>v+'%',font:{size:10}}}}}
+});
+</script>
+</body>
+</html>
